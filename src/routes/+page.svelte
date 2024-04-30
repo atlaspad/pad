@@ -6,12 +6,89 @@
 	import InvisibleCard from '../lib/components/InvisibleCard.svelte';
 	import ProjectGallery from '../lib/components/ProjectGallery.svelte';
 	import BlobImage from '../lib/modules/BlobImage.svelte';
+
+	import { ethers } from 'ethers';
+	import deployedAddresses from "../lib/abi/deployed_addresses.json";
+	import apPoolManagerArtifacts from "../lib/abi/APPoolManager.json";
+
+	async function testCreate() {
+		// const provider = new ethers.providers.Web3Provider(window.ethereum);
+		const provider = await new ethers.BrowserProvider(window.ethereum);
+		const signer = await provider.getSigner()
+	
+		const apPoolManager = new ethers.Contract(
+			deployedAddresses["AtlaspadDemoModule#APPoolManager"],
+			apPoolManagerArtifacts.abi,
+			signer
+		);
+		
+		const presale = {
+			currency: deployedAddresses["AtlaspadDemoModule#APToken"],
+			presaleRate: 1,
+			softcap: 200,
+			hardcap: 300,
+			minBuy: 100,
+			maxBuy: 200,
+			liquidityRate: 1,
+			listingRate: 1,
+			startTime: 1714562568,
+			endTime: 1717067495,
+			lockEndTime: 1719745895,
+			isVesting: false,
+			isLock: false,
+			refund: false,
+			autoListing: true
+		};
+		console.log("hey presale", presale);
+		const vesting = {
+			tge: 1717067495,
+			cliff: 3,
+			release: 50,
+			startTime: 1717067495,
+		}
+		console.log("hey vesting", vesting);
+		const result = await apPoolManager.createPresale(presale, vesting);
+		console.log("heyyy", result);
+	}
+
+	async function testGetAll() {
+		// const provider = new ethers.providers.Web3Provider(window.ethereum);
+		const provider = new ethers.BrowserProvider(window.ethereum);
+	
+		const apPoolManager = new ethers.Contract(
+			deployedAddresses["AtlaspadDemoModule#APPoolManager"],
+			apPoolManagerArtifacts.abi,
+			provider
+		);
+		
+		const result = await apPoolManager.getAllPresales();
+		console.log("heyyy", result);
+	}
+	
+	async function testGetOne() {
+		const presaleAddress = window.prompt("gimme presale address");
+
+		// const provider = new ethers.providers.Web3Provider(window.ethereum);
+		const provider = new ethers.BrowserProvider(window.ethereum);
+	
+		const apPoolManager = new ethers.Contract(
+			deployedAddresses["AtlaspadDemoModule#APPoolManager"],
+			apPoolManagerArtifacts.abi,
+			provider
+		);
+		
+		const result = await apPoolManager.getPresalesData(presaleAddress);
+		console.log("heyyy", result);
+	}
 </script>
 
 <BlobImage blobPositionAlgorithm="absolute" />
 
 <section id="hero" data-blob="bg/hero.svg" data-bpos-left="0">
 	<div class="content">
+		<button type="button" on:click={() => testCreate()}>testCreate</button>
+		<button type="button" on:click={() => testGetAll()}>testGetAll</button>
+		<button type="button" on:click={() => testGetOne()}>testGetOne</button>
 		<h2>Meet the legend</h2>
 		<h1>Atlaspad Launchpad</h1>
 		<p>

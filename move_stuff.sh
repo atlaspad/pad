@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # change this part according to your chain
-CHAIN="1337"
+CHAIN="31337"
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 

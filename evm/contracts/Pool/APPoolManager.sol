@@ -36,16 +36,15 @@ contract APPoolManager is SignatureChecker, ReentrancyGuard {
      * @notice Creates a new presale contract with the given presale details.
      * @param newPresale The presale details to be set for the new presale contract.
      * @param vesting The vesting details to be set for the new presale contract.
-     * @param signature The signature for the presale details, used for signature verification.
      * @return The address of the newly created presale contract.
      */
     function createPresale(
         Presale memory newPresale,
-        Vesting memory vesting,
-        bytes memory signature
+        Vesting memory vesting
+        // bytes memory signature
     ) external nonReentrant returns (address) {
         require(newPresale.startTime >= block.timestamp);
-        require(recover(newPresale, signature), "Incorrect signature");
+        // require(recover(newPresale, signature), "Incorrect signature");
         bytes32 salt = keccak256(
             abi.encodePacked(msg.sender, newPresale.currency)
         );
@@ -60,11 +59,11 @@ contract APPoolManager is SignatureChecker, ReentrancyGuard {
         if (newPresale.isVesting) {
             presaleContract.setVesting(vesting);
         }
-        newPresale.currency.safeTransferFrom(
-            msg.sender,
-            presaleAddress,
-            totalAmount
-        );
+        // newPresale.currency.safeTransferFrom(
+        //     msg.sender,
+        //     presaleAddress,
+        //     totalAmount
+        // );
         emit PresaleCreated(
             presaleAddress,
             newPresale.currency,
@@ -102,9 +101,9 @@ contract APPoolManager is SignatureChecker, ReentrancyGuard {
     function getAllPresales()
         external
         view
-        onlyOwner
         returns (address[] memory poolAddress)
     {
+		poolAddress = new address[](_totalCreated);
         for (uint256 i = 0; i < _totalCreated; ) {
             poolAddress[i] = (_presales[i]);
             unchecked {
@@ -125,7 +124,6 @@ contract APPoolManager is SignatureChecker, ReentrancyGuard {
     )
         external
         view
-        onlyOwner
         returns (Presale memory presaleDatas, Vesting memory vestingDatas)
     {
         return poolAddress.getPoolData();
