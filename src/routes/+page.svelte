@@ -9,75 +9,58 @@
 
 	import { ethers } from 'ethers';
 	import deployedAddresses from "../lib/abi/deployed_addresses.json";
-	import apPoolManagerArtifacts from "../lib/abi/APPoolManager.json";
+	import apCampaignManagerArtifacts from "../lib/abi/APCampaignManager.json";
+	import apCampaignArtifacts from "../lib/abi/APCampaign.json";
 
 	async function testCreate() {
-		// const provider = new ethers.providers.Web3Provider(window.ethereum);
-		const provider = await new ethers.BrowserProvider(window.ethereum);
-		const signer = await provider.getSigner()
+		const provider = new ethers.BrowserProvider(window.ethereum);
+		const signer = await provider.getSigner();
 	
-		const apPoolManager = new ethers.Contract(
-			deployedAddresses["AtlaspadDemoModule#APPoolManager"],
-			apPoolManagerArtifacts.abi,
+		const apCampaignManager = new ethers.Contract(
+			deployedAddresses["AtlaspadDemoModule#APCampaignManager"],
+			apCampaignManagerArtifacts.abi,
 			signer
 		);
 		
-		const presale = {
-			currency: deployedAddresses["AtlaspadDemoModule#APToken"],
+		const campaignData = {
+			investToken: deployedAddresses["AtlaspadDemoModule#APToken"],
 			presaleRate: 1,
-			softcap: 200,
-			hardcap: 300,
-			minBuy: 100,
-			maxBuy: 200,
-			liquidityRate: 1,
-			listingRate: 1,
-			startTime: 1714562568,
-			endTime: 1717067495,
-			lockEndTime: 1719745895,
-			isVesting: false,
-			isLock: false,
-			refund: false,
-			autoListing: true
+			targetSaleAmount: 100000,
+			minBuy: 1,
+			maxBuy: 1000,
+			isRefundable: false,
+			saleStartTime: 1717189200,
+			saleEndTime: 1719781200,
 		};
-		console.log("hey presale", presale);
-		const vesting = {
-			tge: 1717067495,
-			cliff: 3,
-			release: 50,
-			startTime: 1717067495,
-		}
-		console.log("hey vesting", vesting);
-		const result = await apPoolManager.createPresale(presale, vesting);
+		const result = await apCampaignManager.createCampaign(campaignData);
 		console.log("heyyy", result);
 	}
 
 	async function testGetAll() {
-		// const provider = new ethers.providers.Web3Provider(window.ethereum);
 		const provider = new ethers.BrowserProvider(window.ethereum);
 	
-		const apPoolManager = new ethers.Contract(
-			deployedAddresses["AtlaspadDemoModule#APPoolManager"],
-			apPoolManagerArtifacts.abi,
+		const apCampaignManager = new ethers.Contract(
+			deployedAddresses["AtlaspadDemoModule#APCampaignManager"],
+			apCampaignManagerArtifacts.abi,
 			provider
 		);
-		
-		const result = await apPoolManager.getAllPresales();
+
+		const result = await apCampaignManager.getAllCampaignAddresses();
 		console.log("heyyy", result);
 	}
 	
 	async function testGetOne() {
-		const presaleAddress = window.prompt("gimme presale address");
+		const campaignAddress = window.prompt("gimme campaign address");
 
-		// const provider = new ethers.providers.Web3Provider(window.ethereum);
 		const provider = new ethers.BrowserProvider(window.ethereum);
 	
-		const apPoolManager = new ethers.Contract(
-			deployedAddresses["AtlaspadDemoModule#APPoolManager"],
-			apPoolManagerArtifacts.abi,
+		const apCampaign = new ethers.Contract(
+			campaignAddress,
+			apCampaignArtifacts.abi,
 			provider
 		);
 		
-		const result = await apPoolManager.getPresalesData(presaleAddress);
+		const result = await apCampaign._data();
 		console.log("heyyy", result);
 	}
 </script>

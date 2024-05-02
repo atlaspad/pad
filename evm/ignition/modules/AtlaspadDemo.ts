@@ -15,7 +15,11 @@ const AtlaspadDemoModule = buildModule("AtlaspadDemoModule", (m) => {
 		apPool,
 	]);
 
-	return { apToken, apLock, apPool, apPoolManager };
+	const apCampaignManager = m.contract("APCampaignManager", [
+		INITIAL_OWNER,
+	]);
+
+	return { apToken, apLock, apPool, apPoolManager, apCampaignManager };
 });
 
 export default AtlaspadDemoModule;

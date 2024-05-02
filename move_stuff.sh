@@ -9,7 +9,7 @@ chain_dir="$script_dir/evm/ignition/deployments/chain-$CHAIN"
 artifacts_dir="$chain_dir/artifacts"
 target_dir="$script_dir/src/lib/abi"
 
-files="AtlaspadDemoModule#APLock.json AtlaspadDemoModule#APPool.json AtlaspadDemoModule#APPoolManager.json AtlaspadDemoModule#APToken.json"
+files="AtlaspadDemoModule#APLock.json AtlaspadDemoModule#APPool.json AtlaspadDemoModule#APPoolManager.json AtlaspadDemoModule#APToken.json AtlaspadDemoModule#APCampaignManager.json"
 
 for file in $files; do
     new_filename="${file#*#}"
