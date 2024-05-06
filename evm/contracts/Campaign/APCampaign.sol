@@ -22,10 +22,20 @@ contract APCampaign is Ownable {
 	}
 
 	function invest(uint amount) external {
+	// • convert launchpad token to investment token
+	    IERC20 APToken = IERC20(_data.APToken); //(check!)
 		IERC20 investToken = IERC20(_data.investToken);
+
+    // • exchange rate for convert
+		uint256 exchangeRate = getExchangeRate(_amountInAPToken, investToken, APToken);
+		uint256 amountInInvestmentToken = _amountInAPToken * exchangeRate;
+
+	// • transfer
+		APToken.transferFrom(msg.sender, address(this), _amountInAPToken);
+
 		investToken.transferFrom(msg.sender, address(this), amount);
 
 		Investment storage investment = _investments[msg.sender];
-		investment.totalInvested += amount;
+		investment.totalInvested += amountInInvestmentToken;
 	}
 }
