@@ -28,10 +28,10 @@ contract APCampaignManager is Ownable {
 	function createCampaign(CampaignData memory newCampaignData) external {
 		require(
 			newCampaignData.saleStartTime >= block.timestamp,
-			"You must chhose a future time as the campaign start time."
+			"You must choose a future time as the campaign start time."
 		);
 
-		APCampaign newCampaign = new APCampaign(super.owner(), newCampaignData);
+		APCampaign newCampaign = new APCampaign(super.owner(), newCampaignData,0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0);
 
 		_campaignAddresses[_nextCampaignId] = address(newCampaign);
 		_nextCampaignId++;
