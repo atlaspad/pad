@@ -32,10 +32,30 @@ contract APCampaign is Ownable {
 
 	// • transfer
 		APToken.transferFrom(msg.sender, address(this), _amountInAPToken);
-
 		investToken.transferFrom(msg.sender, address(this), amount);
-
 		Investment storage investment = _investments[msg.sender];
 		investment.totalInvested += amountInInvestmentToken;
+
+
+		/*
+		function invest(uint amount) external {
+      IERC20 investToken = IERC20(_data.investToken);
+      investToken.transferFrom(msg.sender, address(this), amount);
+
+      Investment storage investment = _investments[msg.sender];
+      investment.totalInvested += amount;
+   }
+		function buyPresaleTokens(uint amount) external {
+      require(_data.saleStartTime <= block.timestamp && _data.saleEndTime >= block.timestamp, "Presale not active.");
+      require(amount >= _data.minBuy && amount <= _data.maxBuy, "Invalid buy amount.");
+      uint tokensToTransfer = amount * _data.presaleRate;
+      require(tokensToTransfer <= _data.targetSaleAmount, "Not enough tokens available for sale.");
+		IERC20(_data.investToken).transferFrom(msg.sender, address(this), amount);
+      // Assuming your token has a mint function to create new tokens
+      // Replace this with the appropriate function if you're using a different method
+      // _mint(msg.sender, tokensToTransfer); // You need to implement the _mint function for your token
+      // Update investment data
+      _investments[msg.sender].totalInvested += amount;
+		*/
 	}
 }

@@ -3,9 +3,9 @@ pragma solidity ^0.8.19;
 
 struct CampaignData {
     address investToken;
-	// ZORT amount / USDC amount = presaleRate
+	// AP amount / USDC amount = presaleRate
     uint256 presaleRate;
-	// Max amount of ZORT to sell
+	// Max amount of AP to sell
     uint256 targetSaleAmount;
     uint256 minBuy;
     uint256 maxBuy;
