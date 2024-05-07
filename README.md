@@ -1,28 +1,29 @@
-# atlaspad/pad
+# Atlaspad/pad
 
-## localnet/gelistirici ortami
+## Localnet/Dev Environment
 
-### 1. bir pencerede localhost agi ayaga kaldir
+### 1. Stand Up `Localhost` Network in a Window
 
 ```bash
 pnpm run hardhat node --network hardhat
 ```
 
-### 2. bir baska pencerede akilli kontratlari deploy et
+### 2. Deploy Smartcontracts in Another Window
 
 ```bash
 pnpm run hardhat ignition deploy ./ignition/modules/AtlaspadDemo.ts --network localhost
 pnpm run hardhat compile
 ```
 
-### 3. deployment artifact'lari tasi
+### 3. Move Deployment Scripts
 
 ```bash
 ./move_stuff.sh
 ```
 
-### frontend'i baslat
+### Start Svelte Frontend
 
 ```bash
 pnpm run dev -- --open
 ```
+
