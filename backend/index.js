@@ -42,6 +42,14 @@ app.get('/hello', (req, res) => {
 
 app.use('/projects', projectRoute);
 
+app.use((err, req, res, next) => {
+	if (err instanceof mongoose.Error.ValidationError) {
+		const errors = Object.keys(err.errors).map((key) => err.errors[key].message);
+		return res.status(400).json({ errors });
+	}
+	res.status(500).json({ message: 'An unexpected error occurred' });
+});
+
 app.listen(process.env.PORT, () => {
 	console.info('Atlaspad Launchpad backend ready on port', process.env.PORT);
 	console.info('arbeit studio: building the next generation of the Web.');

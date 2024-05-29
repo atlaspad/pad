@@ -8,6 +8,7 @@ const router = express.Router();
 
 require('../controllers/project.controller')();
 
-router.route('/:projectId').get(getProject);
+router.route('/').post(createProject).get(getProjects);
+router.route('/:projectId').get(getProject).delete(deleteProject);
 
 module.exports = router;

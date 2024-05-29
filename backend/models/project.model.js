@@ -52,4 +52,23 @@ const projectSchema = new mongoose.Schema({
 	}
 });
 
+projectSchema.pre('save', function (next) {
+	this.validate()
+		.then(() => next())
+		.catch((err) => next(err));
+});
+
+projectSchema.pre('findOneAndUpdate', function (next) {
+	const update = this.getUpdate();
+
+	this.model
+		.findOne(this.getQuery())
+		.then((doc) => {
+			Object.keys(update).forEach((key) => (doc[key] = update[key]));
+			return doc.validate();
+		})
+		.then(() => next())
+		.catch((err) => next(err));
+});
+
 module.exports = mongoose.model('project', projectSchema);
