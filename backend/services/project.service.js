@@ -21,6 +21,10 @@ class ProjectService {
 			.select('-__v -updatedAt');
 		return project;
 	}
+
+	async deleteProject(projectId) {
+		return await Project.findOneAndDelete({ projectId: projectId });
+	}
 }
 
 module.exports = ProjectService;
