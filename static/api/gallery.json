@@ -31,17 +31,22 @@
 		},
 		{
 			"contractAddress": "0xa16E02E87b7454126E5E10d957A927A7F5B5d2be",
+			"tokenAddress": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
 			"id": "demo",
 			"name": "Demo Project",
 			"flair": "Presale",
 			"details": [],
-			"chain": "mina",
+			"chain": "eth",
 			"description": "# Introduction\nThis project is created to showcase Atlaspad Launchpad's MVP milestones.",
 			"parameters": {
-				"sale_supply": "100,000,000 ETHL",
-				"sale_rate": "1 ETHL per 0.0001 ETH",
-				"softcap": "5,000",
-				"hardcap": "100,000",
+				"saleSupply": "100,000,000 ETHL",
+				"saleRate": {
+					"swapIn": "ETH",
+					"swapOut": "ETHL",
+					"amount": "1"
+				},
+				"softcap": "1",
+				"hardcap": "100000",
 				"liquidity": "7 days, 20% of total liquidity",
 				"vesting": "180 days, 10% every 30 days",
 				"total_sale": "make it onchain"
