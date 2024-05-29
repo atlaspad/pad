@@ -10,6 +10,7 @@
 	import { onDestroy } from 'svelte';
 
 	import * as APCampaign from '$lib/abi/APCampaign.json';
+	import PurchaseModal from '../../../lib/components/PurchaseModal.svelte';
 
 	// The `data` object is created from the JSON sent from the server
 	export let data;
@@ -17,6 +18,7 @@
 	// This is the first step to deserialize the object sent from the server
 	let socials = Object.entries(data.socials);
 	let parameters = Object.entries(data.parameters);
+	let compPurchaseModal;
 
 	// this is how we will map between server fields to real human title names
 	// until I find a better way to do in SvelteKit
@@ -37,6 +39,8 @@
 	const unsubscribe = wallet.subscribe((value) => {
 		modal = value.modal;
 	});
+
+	const showPurchaseModal = () => compPurchaseModal.show(1);
 
 	onDestroy(() => {
 		unsubscribe();
@@ -65,13 +69,22 @@
 	};
 </script>
 
+<PurchaseModal
+	bind:this={compPurchaseModal}
+	saleRate={data.parameters.saleRate.amount}
+	contractAddress={data.parameters.contractAddress}
+	tokenAddress={data.tokenAddress}
+	softcap={data.parameters.softcap}
+	hardcap={data.parameters.hardcap}
+/>
+
 <section class="title">
 	<div>
 		<h2>Home/Projects</h2>
 		<h1>{data.name}</h1>
 	</div>
 
-	<button on:click={() => doPresale()}>Buy</button>
+	<button on:click={() => showPurchaseModal()}>Buy</button>
 
 	{#each data.flairs as flair}
 		<div class="flair">{flair}</div>
