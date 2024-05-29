@@ -2,7 +2,7 @@
 
 CHAIN="31337"
 
-script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+script_dir="$(realpath "$(dirname "${BASH_SOURCE[0]}")")"
 
 chain_dir="$script_dir/evm/ignition/deployments/chain-$CHAIN"
 artifacts_dir="$chain_dir/artifacts"

@@ -1,7 +1,7 @@
 import { Contract, JsonRpcProvider } from 'ethers';
-import apCampaignArtifacts from '../src/lib/abi/APCampaign.json' assert { type: 'json' };
-import aptokenart from '../src/lib/abi/APToken.json' assert { type: 'json' };
-import addresses from '../src/lib/abi/deployed_addresses.json' assert { type: 'json' };
+import apCampaignArtifacts from '../src/lib/abi/APCampaign.json' with { type: 'json' };
+import aptokenart from '../src/lib/abi/APToken.json' with { type: 'json' };
+import addresses from '../src/lib/abi/deployed_addresses.json' with { type: 'json' };
 
 const rpcUrl = 'http://127.0.0.1:8545';
 
