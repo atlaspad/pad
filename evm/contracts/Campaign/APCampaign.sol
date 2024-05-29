@@ -34,7 +34,7 @@ contract APCampaign is Ownable {
     // }
 
 	function invest(uint256 amount) external payable {
-		require(msg.value == amount * _data.presaleRate, 'gonderilen ETH yeterli degil');
+		require(msg.value != amount * _data.presaleRate, 'gonderilen ETH yeterli degil');
 
 		APToken investToken = APToken(_data.tokenAddress);
 		investToken.approve(address(this), amount * (10 ** investToken.decimals()));
