@@ -3,7 +3,6 @@
  *  Yigid BALABAN <fyb@fybx.dev
  */
 import { writable } from 'svelte/store';
-import { BrowserProvider } from 'ethers';
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers';
 
 const projectId = 'dd033d756ef855ad1e5d50b7fadfa280';
@@ -40,7 +39,28 @@ const web3Modal = createWeb3Modal({
 	enableAnalytics: false
 });
 
+const initialStore = {
+	modal: web3Modal,
+	modalStatus: false,
+	connectionStatus: false,
+	authenticated: false
+};
+
 // Export the writable store
-export const wallet = writable({
-	modal: web3Modal
+export const wallet = writable(initialStore);
+
+web3Modal.subscribeState((state) => {
+	const modalStatus = state.open;
+	console.log('modal', modalStatus);
+
+	setTimeout(() => {
+		const connectionStatus = web3Modal.getIsConnected();
+		console.log('wallet connected', connectionStatus);
+		// Update the Svelte store
+		wallet.update((store) => ({
+			...store,
+			modalStatus,
+			connectionStatus
+		}));
+	}, 50); // yeah, please don't judge
 });
