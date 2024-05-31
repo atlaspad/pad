@@ -14,10 +14,12 @@
 
 	// The `data` object is created from the JSON sent from the server
 	export let data;
+	const parameters = data.parameters;
+	console.log(Object.entries(parameters));
+	//console.log(data);
 
 	// This is the first step to deserialize the object sent from the server
 	let socials = Object.entries(data.socials);
-	let parameters = Object.entries(data.parameters);
 	let compPurchaseModal;
 
 	// this is how we will map between server fields to real human title names
@@ -73,7 +75,7 @@
 	bind:this={compPurchaseModal}
 	saleRate={data.parameters.saleRate.amount}
 	contractAddress={data.parameters.contractAddress}
-	tokenAddress={data.tokenAddress}
+	tokenAddress={data.parameters.tokenAddress}
 	softcap={data.parameters.softcap}
 	hardcap={data.parameters.hardcap}
 />
@@ -86,9 +88,7 @@
 
 	<button on:click={() => showPurchaseModal()}>Buy</button>
 
-	{#each data.flairs as flair}
-		<div class="flair">{flair}</div>
-	{/each}
+	<div class="flair">{data.flair}</div>
 </section>
 
 <hr />
@@ -96,14 +96,18 @@
 <section class="content">
 	<section class="left">
 		<nav>
-			{#each socials as [key, value]}
+			<!-- {#each socials as [key, value]}
 				<SocialButton type={key} href={value} />
-			{/each}
+			{/each} -->
 		</nav>
 		<article class="parameters">
-			{#each parameters as [key, value]}
+			{#each Object.entries(parameters) as [key, value]}
 				<h1>{paramTitleMap[key]}</h1>
+				{#if key == 'saleRate'}
+					<p>{value.amount} {value.swapIn} per {value.swapOut}</p>
+				{:else}
 				<p>{value}</p>
+				{/if}
 			{/each}
 		</article>
 	</section>
