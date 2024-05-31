@@ -6,16 +6,16 @@
 import { error } from '@sveltejs/kit';
 import { Contract, JsonRpcProvider } from 'ethers';
 import APCampaign from '$lib/abi/APCampaign.json';
+import { PUBLIC_BACKEND_HOSTNAME } from '$env/static/public';
 
 // TODO this section must change on demo day!!!
-const backendHostname = 'http://127.0.0.1:3130';
 const rpcUrl = 'http://127.0.0.1:8545';
 
 /** @type {import('./$types').PageLoad} */
 export async function load({ fetch, params }) {
 	// step 1: get the metadata from offchain
 	// we will mock the backend connection here, lol
-	const response = await fetch(`${backendHostname}/projects/${params.slug}`);
+	const response = await fetch(`${PUBLIC_BACKEND_HOSTNAME}/projects/${params.slug}`);
 	const what = await response.json();
 
 	//const what = data.data.find((element) => element.id == params.slug);

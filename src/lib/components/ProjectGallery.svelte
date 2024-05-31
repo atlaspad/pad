@@ -8,9 +8,9 @@
 	import ProjectCard from './ProjectCard.svelte';
 	import ImageButton from './ImageButton.svelte';
 	import SearchBar from './SearchBar.svelte';
-	import { getCampaignData } from "../contracts/APCampaign";
+	import { getCampaignData } from '../contracts/APCampaign';
 
-	const backendHostname = 'http://127.0.0.1:3130';
+	import { PUBLIC_BACKEND_HOSTNAME } from '$env/static/public';
 
 	let galleryData;
 	let loading = true;
@@ -18,7 +18,7 @@
 	async function fetchData() {
 		try {
 			loading = true;
-			const response = await fetch(`${backendHostname}/projects`);
+			const response = await fetch(`${PUBLIC_BACKEND_HOSTNAME}/projects`);
 			const data = await response.json();
 			let projects = data.data.projects;
 
