@@ -10,51 +10,32 @@
 	import SearchBar from './SearchBar.svelte';
 	import { getCampaignData } from "../contracts/APCampaign";
 
-	let galleryData = [];
+	const backendHostname = 'http://127.0.0.1:3130';
+
+	let galleryData;
 	let loading = true;
 
-	// async function fetchData() {
-	// 	let contractAddresses, backendData;
-	// 	try {
-	// 		loading = true;
-			
-	// 		// Contract data
-	// 		contractAddresses = await getAllCampaignAddresses();
-			
-	// 		// Backend data
-	// 		const response = await fetch('/api/gallery.json');
-	// 		backendData = await response.json();
-	// 	} catch (error) {
-	// 		console.error('Error fetching data:', error);
-	// 	} finally {
-	// 		loading = false;
-	// 	}
-
-	// 	galleryData = contractAddresses.map(ca => ({
-	// 		contractAddress: ca,
-	// 		...backendData['data']
-	// 	}));
-	// }
 	async function fetchData() {
 		try {
 			loading = true;
-			const response = await fetch('/api/gallery.json');
+			const response = await fetch(`${backendHostname}/projects`);
 			const data = await response.json();
+			let projects = data.data.projects;
 
-			console.log("before", data['data'])
+			// NOTE TO READER: this part ultimately populates the details section with onchain data
+			// it may or may not be usable in the final product
+			// either burn it, or use it.
 
-			data['data'] = await Promise.all(data['data'].map(async data => {
-				if (!data.contractAddress) return data;
-				const campaignData = await getCampaignData(data.contractAddress);
-				data.details = [
-					{ "key": "Target", "value": `$ ${campaignData[2]}`, "monospaced": true },
-				]
-				return data
-			}));
+			// projects = await Promise.all(projects.map(async project => {
+			// 	if (!project.contractAddress) return project;
+			// 	const campaignData = await getCampaignData(data.contractAddress);
+			// 	data.details = [
+			// 		{ "key": "Target", "value": `$ ${campaignData[2]}`, "monospaced": true },
+			// 	]
+			// 	return data;
+			// }));
 
-			console.log("after", data['data'])
-
-			galleryData = data['data'];
+			galleryData = projects;
 		} catch (error) {
 			console.error('Error fetching data:', error);
 		} finally {
@@ -90,7 +71,7 @@
 		<div class="gallery">
 			{#each galleryData as item}
 				<ProjectCard
-					id={item.id}
+					id={item.projectId}
 					name={item.name}
 					flair={item.flair}
 					details={item.details}

@@ -8,12 +8,12 @@
 	export let name = 'Project Name';
 	export let id;
 
-	export let flair = 'TBA'; // Valid keys: [ private sale, token sale, presale, tba ]
+	export let flair = 'TBA'; // Valid keys: [ private, public, presale, tba ]
 	const flairToColorMap = {
-		'Private Sale': '#4B04F1',
-		'Token Sale': '#88F2E7',
-		Presale: '#FF5B96',
-		TBA: '#EAFF96'
+		private: '#4B04F1',
+		public: '#88F2E7',
+		presale: '#FF5B96',
+		tba: '#EAFF96'
 	};
 	$: flairColor = flairToColorMap[flair];
 
@@ -89,14 +89,14 @@
 
 		.banner {
 			aspect-ratio: 1.5;
-			border-radius: .5rem;
+			border-radius: 0.5rem;
 			width: 100%;
 
 			position: relative;
 			span {
 				position: absolute;
-				top: .5rem;
-				left: .5rem;
+				top: 0.5rem;
+				left: 0.5rem;
 
 				display: flex;
 				padding: 4px 12px;
