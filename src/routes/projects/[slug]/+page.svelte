@@ -10,10 +10,8 @@
 
 	// The `data` object is created from the JSON sent from the server
 	export let data;
-	const parameters = data.parameters;
 
 	// This is the first step to deserialize the object sent from the server
-	let socials = Object.entries(data.socials);
 	let compPurchaseModal;
 
 	// this is how we will map between server fields to real human title names
@@ -59,17 +57,17 @@
 <section class="content">
 	<section class="left">
 		<nav>
-			<!-- {#each socials as [key, value]}
+			{#each Object.entries(data.socials) as [key, value]}
 				<SocialButton type={key} href={value} />
-			{/each} -->
+			{/each}
 		</nav>
 		<article class="parameters">
-			{#each Object.entries(parameters) as [key, value]}
+			{#each Object.entries(data.parameters) as [key, value]}
 				<h1>{paramTitleMap[key]}</h1>
 				{#if key == 'saleRate'}
 					<p>{value.amount} {value.swapIn} per {value.swapOut}</p>
 				{:else}
-				<p>{value}</p>
+					<p>{value}</p>
 				{/if}
 			{/each}
 		</article>

@@ -41,7 +41,7 @@ const projectSchema = new mongoose.Schema({
 		maxLength: 500000
 	},
 	parameters: Object,
-	socials: Array
+	socials: Object
 });
 
 projectSchema.pre('save', function (next) {
