@@ -6,23 +6,104 @@
 
 <script>
 	import { wallet } from '$lib/utils/wallet.js';
-	import { onDestroy } from 'svelte';
-
-	let modal;
-
-	const unsubscribe = wallet.subscribe((value) => {
-		modal = value.modal;
-	});
-
-	onDestroy(() => {
-		unsubscribe();
-	});
+	import { ethers } from 'ethers';
+	import { browser } from '$app/environment';
+	import { SiweMessage } from 'siwe';
 
 	export let imgSource;
+	$: ({ modal, modalStatus, connectionStatus, authenticated } = $wallet);
+
+	const scheme = browser && window.location.protocol.slice(0, -1);
+	const domain = browser && window.location.host;
+	const origin = browser && window.location.origin;
+	const BACKEND_ADDR = 'http://localhost:3130';
+
+	async function createSiweMessage(address, statement) {
+		const res = await fetch(`${BACKEND_ADDR}/nonce`, {
+			credentials: 'include'
+		});
+		const message = new SiweMessage({
+			scheme,
+			domain,
+			address,
+			statement,
+			uri: origin,
+			version: '1',
+			chainId: '1',
+			nonce: await res.text()
+		});
+		return message.prepareMessage();
+	}
+
+	async function signInWithEthereum() {
+		const signer = await provider.getSigner();
+
+		const message = await createSiweMessage(
+			await signer.getAddress(),
+			'Sign in with Ethereum to the app.'
+		);
+		const signature = await signer.signMessage(message);
+
+		console.log('WE ARE TRANSMITTING THE MESSAGE!!!', message, signature);
+
+		const res = await fetch(`${BACKEND_ADDR}/verify`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ message, signature }),
+			credentials: 'include'
+		});
+
+		if ((await res.text()) == 'true') {
+			wallet.update((store) => ({ ...store, authenticated: true }));
+			console.log('true');
+		}
+	}
+
+	async function getInformation() {
+		const res = await fetch(`${BACKEND_ADDR}/personal_information`, {
+			credentials: 'include'
+		});
+		console.log(await res.text());
+	}
+
+	let alreadyWaiting;
+	let provider;
+
+	const doTheThing = () => {
+		modal.open();
+
+		console.log('connectionStatus', connectionStatus);
+		console.log('alreadyWaiting', alreadyWaiting);
+		console.log('authenticated', authenticated);
+
+		const signIn = setInterval(async () => {
+			if (connectionStatus && !alreadyWaiting && !authenticated) {
+				alreadyWaiting = true;
+				provider = new ethers.BrowserProvider(await modal.getWalletProvider());
+				await signInWithEthereum();
+				await getInformation();
+				clearInterval(signIn);
+			} else {
+				// stop trying if modal is closed and wallet was not connected
+				// or they've authenticated
+				if ((!modalStatus && !connectionStatus) || authenticated) {
+					alreadyWaiting = false;
+					clearInterval(signIn);
+				}
+
+				console.log('not now');
+			}
+		}, 500);
+	};
+
+	// https://www.youtube.com/watch?v=PxBnSC8Mzdo
 </script>
 
-<button on:click={() => modal.open()}>
-	<img src={imgSource} alt="Button logo" /> Connect Wallet
+<button on:click={() => doTheThing()}>
+	<img src={imgSource} alt="Button logo" />
+	{connectionStatus ? 'Disconnect' : 'Connect Wallet'}
 </button>
 
 <style lang="scss">
