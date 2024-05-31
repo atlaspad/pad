@@ -5,18 +5,12 @@
 <script>
 	import SocialButton from '$lib/components/SocialButton.svelte';
 	import { marked } from 'marked';
-	import { ethers } from 'ethers';
-	import { wallet } from '$lib/utils/wallet.js';
-	import { onDestroy } from 'svelte';
 
-	import * as APCampaign from '$lib/abi/APCampaign.json';
 	import PurchaseModal from '../../../lib/components/PurchaseModal.svelte';
 
 	// The `data` object is created from the JSON sent from the server
 	export let data;
 	const parameters = data.parameters;
-	console.log(Object.entries(parameters));
-	//console.log(data);
 
 	// This is the first step to deserialize the object sent from the server
 	let socials = Object.entries(data.socials);
@@ -37,38 +31,7 @@
 		total_sale: 'Total Sale'
 	};
 
-	let modal;
-	const unsubscribe = wallet.subscribe((value) => {
-		modal = value.modal;
-	});
-
 	const showPurchaseModal = () => compPurchaseModal.show(1);
-
-	onDestroy(() => {
-		unsubscribe();
-	});
-
-	const doPresale = async () => {
-		const provider = new ethers.BrowserProvider(modal.getWalletProvider());
-		const contract = new ethers.Contract(
-			data.parameters.contractAddress,
-			APCampaign.abi,
-			await provider.getSigner()
-		);
-
-		async function invest(amount) {
-			try {
-				const tx = await contract.invest(amount, { value: amount });
-				await tx.wait();
-				return true;
-			} catch (error) {
-				console.error('invest error:', error);
-				return false;
-			}
-		}
-
-		await invest(1);
-	};
 </script>
 
 <PurchaseModal
