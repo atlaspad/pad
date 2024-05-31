@@ -5,6 +5,8 @@
 
 const mongoose = require('mongoose');
 
+// Return to this chat if you really need strict validation
+// https://chatgpt.com/share/a9a5a692-6000-4a83-a5ff-41f8b46ce35d
 const projectSchema = new mongoose.Schema({
 	projectId: {
 		type: String,
@@ -39,17 +41,7 @@ const projectSchema = new mongoose.Schema({
 		maxLength: 500000
 	},
 	parameters: Object,
-	socials: {
-		type: Map,
-		of: mongoose.Schema.Types.Mixed,
-		validate: {
-			validator: function (value) {
-				const allowedKeys = ['discord', 'github', 'twitter'];
-				return Object.keys(value).every((key) => allowedKeys.includes(key));
-			},
-			message: (props) => `${props.value} contains invalid keys`
-		}
-	}
+	socials: Array
 });
 
 projectSchema.pre('save', function (next) {
