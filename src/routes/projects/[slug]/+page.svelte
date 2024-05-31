@@ -5,19 +5,13 @@
 <script>
 	import SocialButton from '$lib/components/SocialButton.svelte';
 	import { marked } from 'marked';
-	import { ethers } from 'ethers';
-	import { wallet } from '$lib/utils/wallet.js';
-	import { onDestroy } from 'svelte';
 
-	import * as APCampaign from '$lib/abi/APCampaign.json';
 	import PurchaseModal from '../../../lib/components/PurchaseModal.svelte';
 
 	// The `data` object is created from the JSON sent from the server
 	export let data;
 
 	// This is the first step to deserialize the object sent from the server
-	let socials = Object.entries(data.socials);
-	let parameters = Object.entries(data.parameters);
 	let compPurchaseModal;
 
 	// this is how we will map between server fields to real human title names
@@ -35,45 +29,14 @@
 		total_sale: 'Total Sale'
 	};
 
-	let modal;
-	const unsubscribe = wallet.subscribe((value) => {
-		modal = value.modal;
-	});
-
 	const showPurchaseModal = () => compPurchaseModal.show(1);
-
-	onDestroy(() => {
-		unsubscribe();
-	});
-
-	const doPresale = async () => {
-		const provider = new ethers.BrowserProvider(modal.getWalletProvider());
-		const contract = new ethers.Contract(
-			data.parameters.contractAddress,
-			APCampaign.abi,
-			await provider.getSigner()
-		);
-
-		async function invest(amount) {
-			try {
-				const tx = await contract.invest(amount, { value: amount });
-				await tx.wait();
-				return true;
-			} catch (error) {
-				console.error('invest error:', error);
-				return false;
-			}
-		}
-
-		await invest(1);
-	};
 </script>
 
 <PurchaseModal
 	bind:this={compPurchaseModal}
 	saleRate={data.parameters.saleRate.amount}
 	contractAddress={data.parameters.contractAddress}
-	tokenAddress={data.tokenAddress}
+	tokenAddress={data.parameters.tokenAddress}
 	softcap={data.parameters.softcap}
 	hardcap={data.parameters.hardcap}
 />
@@ -86,9 +49,7 @@
 
 	<button on:click={() => showPurchaseModal()}>Buy</button>
 
-	{#each data.flairs as flair}
-		<div class="flair">{flair}</div>
-	{/each}
+	<div class="flair">{data.flair}</div>
 </section>
 
 <hr />
@@ -96,14 +57,18 @@
 <section class="content">
 	<section class="left">
 		<nav>
-			{#each socials as [key, value]}
+			{#each Object.entries(data.socials) as [key, value]}
 				<SocialButton type={key} href={value} />
 			{/each}
 		</nav>
 		<article class="parameters">
-			{#each parameters as [key, value]}
+			{#each Object.entries(data.parameters) as [key, value]}
 				<h1>{paramTitleMap[key]}</h1>
-				<p>{value}</p>
+				{#if key == 'saleRate'}
+					<p>{value.amount} {value.swapIn} per {value.swapOut}</p>
+				{:else}
+					<p>{value}</p>
+				{/if}
 			{/each}
 		</article>
 	</section>
