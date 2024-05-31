@@ -6,7 +6,7 @@ script_dir="$(realpath "$(dirname "${BASH_SOURCE[0]}")")"
 
 chain_dir="$script_dir/evm/ignition/deployments/chain-$CHAIN"
 artifacts_dir="$chain_dir/artifacts"
-target_dir="$script_dir/src/lib/abi"
+target_dir="$script_dir/frontend/src/lib/abi"
 
 move_over() {
     cd "$script_dir"
